@@ -1,0 +1,11 @@
+service: auth-server
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  stage: dev
+
+functions:
+  hello:
+    handler: handler.hello
