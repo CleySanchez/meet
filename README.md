@@ -90,3 +90,39 @@ As a user, I should be able to see visual data of events so that I can easily un
    ```bash
    git clone https://github.com/CleySanchez/meet.git
    cd meet
+
++-------------------------+
+|    Frontend (React App) |
+|  (Hosted on GitHub Pages)|
++-------------------------+
+           |
+           | API Requests
+           |
+           v
++-------------------------+
+| Backend (AWS Lambda)    |
+| Functions               |
++-------------------------+
+  |                |
+  |                | User Authentication
+  |                |
+  v                v
++-------------------------+  +----------------------------+
+| External API (Google    |  | Authentication Provider    |
+| Calendar API)           |  | (Google OAuth 2.0)         |
++-------------------------+  +----------------------------+
+  |
+  | Fetch Event Data
+  |
+  v
++-------------------------+
+| Event Data Response     |
++-------------------------+
+  |
+  | Send Event Data to Frontend
+  |
+  v
++-------------------------+
+|    Frontend (React App) |
+|  (Hosted on GitHub Pages)|
++-------------------------+
