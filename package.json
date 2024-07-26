@@ -4,8 +4,6 @@
   "private": true,
   "homepage": "https://CleySanchez.github.io/meet",
   "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -51,6 +49,8 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.8",
+    "@testing-library/react": "^16.0.0",
     "gh-pages": "^6.1.1"
   },
   "description": "## Project Overview The Meet App is a serverless, progressive web application (PWA) built with React, utilizing a test-driven development (TDD) approach. The app uses the Google Calendar API to fetch upcoming events, and allows users to search for events by city, view event details, specify the number of events, use the app offline, add a shortcut to their home screen, and visualize event details through charts.",
