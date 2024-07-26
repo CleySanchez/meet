@@ -7,3 +7,4 @@ describe('<App /> component', () => {
     expect(AppDOM.querySelector('#event-list')).toBeInTheDocument();
   });
 });
+

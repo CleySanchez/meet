@@ -20,3 +20,4 @@ const NumberOfEvents = () => {
 };
 
 export default NumberOfEvents;
+
