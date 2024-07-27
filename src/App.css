@@ -1,3 +1,4 @@
+/* Existing styles */
 .App {
   text-align: center;
 }
@@ -35,4 +36,74 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* New styles for layout and component styling */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  margin: 0;
+  padding: 0;
+}
+
+.App-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+input.number-of-events {
+  width: 50px;
+  margin: 10px 0;
+  padding: 5px;
+}
+
+.event-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+input[type="text"] {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="number"] {
+  padding: 10px;
+  margin-bottom: 10px;
+  width: 100px;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #282c34;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #61dafb;
+}
+
+.event-item h2 {
+  margin: 0;
+  font-size: 1.5em;
+}
+
+.event-item p {
+  margin: 5px 0;
+  color: #555;
 }

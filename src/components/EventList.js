@@ -1,17 +1,21 @@
+// src/components/EventList.js
+
 import React from 'react';
 
-function EventList({ numberOfEvents }) {
-  const events = Array.from({ length: numberOfEvents }, (_, i) => ({ id: i, name: `Event ${i + 1}` }));
-
+const EventList = ({ events }) => {
   return (
     <div id="event-list">
       {events.map(event => (
         <div key={event.id} className="event-item">
-          {event.name}
+          <h2>{event.name}</h2>
+          <p>{event.location}</p>
+          <p>{new Date(event.date).toString()}</p>
+          <button>Show Details</button>
         </div>
       ))}
     </div>
   );
-}
+};
 
 export default EventList;
+

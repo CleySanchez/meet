@@ -1,26 +1,32 @@
-import { render, fireEvent } from '@testing-library/react';
+// src/__tests__/NumberOfEvents.test.js
+
+import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import NumberOfEvents from '../components/NumberOfEvents';
 
 describe('<NumberOfEvents /> component', () => {
-  test('renders spinbutton input', () => {
-    const setCurrentNOE = jest.fn();
-    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
-    const input = getByRole('spinbutton');
-    expect(input).toBeInTheDocument();
+  let NumberOfEventsComponent;
+  beforeEach(() => {
+    NumberOfEventsComponent = render(<NumberOfEvents />);
   });
 
-  test('default value of input is 32', () => {
-    const setCurrentNOE = jest.fn();
-    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
-    const input = getByRole('spinbutton');
-    expect(input.value).toBe('32');
+  test('renders number of events text input', () => {
+    const numberTextBox = NumberOfEventsComponent.queryByRole('textbox');
+    expect(numberTextBox).toBeInTheDocument();
+    expect(numberTextBox).toHaveClass('number-of-events-input');
   });
 
-  test('changes value when user types', () => {
-    const setCurrentNOE = jest.fn();
-    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
-    const input = getByRole('spinbutton');
-    fireEvent.change(input, { target: { value: '10' } });
-    expect(input.value).toBe('10');
+  test('default number is 32', async () => {
+    const numberTextBox = NumberOfEventsComponent.queryByRole('textbox');
+    expect(numberTextBox).toHaveValue("32");
+  });
+
+  test('number of events text box value changes when the user types in it', async () => {
+    const user = userEvent.setup();
+    const numberTextBox = NumberOfEventsComponent.queryByRole('textbox');
+    await user.type(numberTextBox, "123")
+
+    // 32 (the default value already written) + 123
+    expect(numberTextBox).toHaveValue("32123");
   });
 });
