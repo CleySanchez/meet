@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import EventList from './components/EventList';
+import NumberOfEvents from './components/NumberOfEvents';
 
-const App = () => {
+function App() {
+  const [currentNOE, setCurrentNOE] = useState(32);
+
   return (
     <div className="App">
-      <div id="event-list"></div>
+      <NumberOfEvents setCurrentNOE={setCurrentNOE} />
+      <EventList numberOfEvents={currentNOE} />
     </div>
   );
 }

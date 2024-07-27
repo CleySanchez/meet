@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 
-const Event = ({ event }) => {
+function Event({ event }) {
   const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="event">
-      <h2>{event.summary}</h2>
-      <p>{event.created}</p>
-      <p>{event.location}</p>
+    <div>
+      <h2>{event.name}</h2>
       <button onClick={() => setShowDetails(!showDetails)}>
         {showDetails ? 'Hide Details' : 'Show Details'}
       </button>
       {showDetails && <p>Event Details</p>}
     </div>
   );
-};
+}
 
 export default Event;

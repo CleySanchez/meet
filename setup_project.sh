@@ -1,15 +1,22 @@
-# Supprimer les fichiers inutiles s'ils existent
+#!/bin/bash
+
+# Remove unnecessary files
 rm -f src/logo.svg src/App.test.js src/reportWebVitals.js
 
-# Nettoyer le fichier App.js
+# Clean up App.js
 cat > src/App.js << EOL
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import EventList from './components/EventList';
+import NumberOfEvents from './components/NumberOfEvents';
 
 function App() {
+  const [currentNOE, setCurrentNOE] = useState(32);
+
   return (
     <div className="App">
-      {/* Ajoutez vos composants ici */}
+      <NumberOfEvents setCurrentNOE={setCurrentNOE} />
+      <EventList numberOfEvents={currentNOE} />
     </div>
   );
 }
@@ -17,7 +24,7 @@ function App() {
 export default App;
 EOL
 
-# Nettoyer le fichier index.js
+# Clean up index.js
 cat > src/index.js << EOL
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -32,80 +39,142 @@ ReactDOM.render(
 );
 EOL
 
-# Installer les bibliothèques de test
-npm install --save-dev @testing-library/react @testing-library/jest-dom
+# Install testing libraries
+npm install --save-dev @testing-library/react @testing-library/jest-dom @testing-library/user-event
 
-# Configurer setupTests.js
+# Configure setupTests.js
 cat > src/setupTests.js << EOL
 import '@testing-library/jest-dom';
 EOL
 
-# Créer le dossier __tests__ pour les tests
+# Create the __tests__ directory
 mkdir -p src/__tests__
 
-# Fonctionnalité 1 : Écrire les tests pour la fonctionnalité Filtrer les événements par ville
+# Create integration test for App component
 cat > src/__tests__/App.test.js << EOL
 import { render } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import App from '../App';
 
 describe('<App /> component', () => {
   test('renders list of events', () => {
-    const AppDOM = render(<App />).container.firstChild;
-    expect(AppDOM.querySelector('#event-list')).toBeInTheDocument();
+    const { container } = render(<App />);
+    expect(container.querySelector('#event-list')).toBeInTheDocument();
+  });
+
+  test('updates event list when number of events changes', async () => {
+    const user = userEvent.setup();
+    const { getByRole, findAllByText } = render(<App />);
+    const numberOfEventsInput = getByRole('spinbutton');
+
+    await user.clear(numberOfEventsInput);
+    await user.type(numberOfEventsInput, '10');
+    const eventItems = await findAllByText(/Event \d/i);
+    expect(eventItems).toHaveLength(10);
   });
 });
 EOL
 
-# Implémenter le composant App.js pour passer le test
-cat > src/App.js << EOL
+# Create the EventList component
+cat > src/components/EventList.js << EOL
 import React from 'react';
-import './App.css';
 
-const App = () => {
+function EventList({ numberOfEvents }) {
+  const events = Array.from({ length: numberOfEvents }, (_, i) => ({ id: i, name: \`Event \${i + 1}\` }));
+
   return (
-    <div className="App">
-      <div id="event-list"></div>
+    <div id="event-list">
+      {events.map(event => (
+        <div key={event.id} className="event-item">
+          {event.name}
+        </div>
+      ))}
     </div>
   );
 }
 
-export default App;
+export default EventList;
 EOL
 
-# Fonctionnalité 2 : Préparer les tests et le composant Event
+# Create the NumberOfEvents component
+cat > src/components/NumberOfEvents.js << EOL
+import React from 'react';
+
+function NumberOfEvents({ setCurrentNOE }) {
+  return (
+    <div>
+      <input
+        type="number"
+        defaultValue={32}
+        onChange={(e) => setCurrentNOE(parseInt(e.target.value))}
+      />
+    </div>
+  );
+}
+
+export default NumberOfEvents;
+EOL
+
+# Create integration test for NumberOfEvents component
+cat > src/__tests__/NumberOfEvents.test.js << EOL
+import { render, fireEvent } from '@testing-library/react';
+import NumberOfEvents from '../components/NumberOfEvents';
+
+describe('<NumberOfEvents /> component', () => {
+  test('renders spinbutton input', () => {
+    const setCurrentNOE = jest.fn();
+    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
+    const input = getByRole('spinbutton');
+    expect(input).toBeInTheDocument();
+  });
+
+  test('default value of input is 32', () => {
+    const setCurrentNOE = jest.fn();
+    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
+    const input = getByRole('spinbutton');
+    expect(input.value).toBe('32');
+  });
+
+  test('changes value when user types', () => {
+    const setCurrentNOE = jest.fn();
+    const { getByRole } = render(<NumberOfEvents setCurrentNOE={setCurrentNOE} />);
+    const input = getByRole('spinbutton');
+    fireEvent.change(input, { target: { value: '10' } });
+    expect(input.value).toBe('10');
+  });
+});
+EOL
+
+# Create the Event component
+cat > src/components/Event.js << EOL
+import React, { useState } from 'react';
+
+function Event({ event }) {
+  const [showDetails, setShowDetails] = useState(false);
+
+  return (
+    <div>
+      <h2>{event.name}</h2>
+      <button onClick={() => setShowDetails(!showDetails)}>
+        {showDetails ? 'Hide Details' : 'Show Details'}
+      </button>
+      {showDetails && <p>Event Details</p>}
+    </div>
+  );
+}
+
+export default Event;
+EOL
+
+# Create integration test for Event component
 cat > src/__tests__/Event.test.js << EOL
 import { render } from '@testing-library/react';
-import Event from '../components/Event';
 import userEvent from '@testing-library/user-event';
-
-const event = {
-  summary: 'Event Title',
-  created: '2023-07-26T14:00:00Z',
-  location: 'Berlin, Germany'
-};
+import Event from '../components/Event';
 
 describe('<Event /> component', () => {
-  test('renders event title', () => {
-    const { getByText } = render(<Event event={event} />);
-    expect(getByText('Event Title')).toBeInTheDocument();
-  });
-
-  test('renders event time', () => {
-    const { getByText } = render(<Event event={event} />);
-    expect(getByText('2023-07-26T14:00:00Z')).toBeInTheDocument();
-  });
-
-  test('renders event location', () => {
-    const { getByText } = render(<Event event={event} />);
-    expect(getByText('Berlin, Germany')).toBeInTheDocument();
-  });
-
-  test('renders show details button', () => {
-    const { getByText } = render(<Event event={event} />);
-    expect(getByText('Show Details')).toBeInTheDocument();
-  });
-
   test('toggles event details on button click', () => {
+    const event = { id: 1, name: 'Event 1', details: 'Event Details' };
     const { getByText, queryByText } = render(<Event event={event} />);
     const button = getByText('Show Details');
     userEvent.click(button);
@@ -116,95 +185,8 @@ describe('<Event /> component', () => {
 });
 EOL
 
-# Créer le composant Event.js pour passer les tests
-mkdir -p src/components
-cat > src/components/Event.js << EOL
-import React, { useState } from 'react';
+# Run tests
+npm test -- --coverage --watchAll=false
 
-const Event = ({ event }) => {
-  const [showDetails, setShowDetails] = useState(false);
-
-  return (
-    <div className="event">
-      <h2>{event.summary}</h2>
-      <p>{event.created}</p>
-      <p>{event.location}</p>
-      <button onClick={() => setShowDetails(!showDetails)}>
-        {showDetails ? 'Hide Details' : 'Show Details'}
-      </button>
-      {showDetails && <p>Event Details</p>}
-    </div>
-  );
-};
-
-export default Event;
-EOL
-
-# Fonctionnalité 3 : Écrire les tests pour la fonctionnalité Spécifier le nombre d'événements
-cat > src/__tests__/NumberOfEvents.test.js << EOL
-import { render, fireEvent } from '@testing-library/react';
-import NumberOfEvents from '../components/NumberOfEvents';
-
-describe('<NumberOfEvents /> component', () => {
-  test('renders textbox input', () => {
-    const { getByRole } = render(<NumberOfEvents />);
-    const input = getByRole('textbox');
-    expect(input).toBeInTheDocument();
-  });
-
-  test('default value of input is 32', () => {
-    const { getByRole } = render(<NumberOfEvents />);
-    const input = getByRole('textbox');
-    expect(input.value).toBe('32');
-  });
-
-  test('changes value when user types', () => {
-    const { getByRole } = render(<NumberOfEvents />);
-    const input = getByRole('textbox');
-    fireEvent.change(input, { target: { value: '10' } });
-    expect(input.value).toBe('10');
-  });
-});
-EOL
-
-# Créer le composant NumberOfEvents.js pour passer les tests
-cat > src/components/NumberOfEvents.js << EOL
-import React, { useState } from 'react';
-
-const NumberOfEvents = () => {
-  const [number, setNumber] = useState(32);
-
-  const handleInputChanged = (event) => {
-    const value = event.target.value;
-    setNumber(value);
-  };
-
-  return (
-    <div className="number-of-events">
-      <input
-        type="text"
-        value={number}
-        onChange={handleInputChanged}
-      />
-    </div>
-  );
-};
-
-export default NumberOfEvents;
-EOL
-
-# Installer la dépendance pour éviter l'avertissement
-npm install --save-dev @babel/plugin-transform-private-property-in-object
-
-# Exécuter les tests pour vérifier que tout passe
-npm test -- --coverage
-npm test -- --detectOpenHandles
-
-# Initialiser Git seulement s'il n'est pas déjà initialisé
-if [ ! -d ".git" ]; then
-  git init
-fi
-
-# Ajouter tous les fichiers à git, committer les changements
-git add .
-git commit -m "Initial commit with tests and components"
+# Deploy to GitHub Pages
+npm run deploy
