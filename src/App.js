@@ -6,25 +6,27 @@ function App() {
   const [events, setEvents] = useState([]);
   const [city, setCity] = useState('');
   const [filteredEvents, setFilteredEvents] = useState([]);
+  const [numberOfEvents, setNumberOfEvents] = useState(32); // Default to showing 32 events
 
   useEffect(() => {
-    const fetchData = async () => {
-      setEvents(mockData);
-      setFilteredEvents(mockData);
-    };
-    fetchData();
-  }, []);
+    setEvents(mockData);
+    setFilteredEvents(mockData.slice(0, numberOfEvents));
+  }, [numberOfEvents]);
 
   useEffect(() => {
-    setFilteredEvents(
-      events.filter(event =>
-        event.location.toLowerCase().includes(city.toLowerCase())
-      )
+    const filtered = events.filter(event =>
+      event.location.toLowerCase().includes(city.toLowerCase())
     );
-  }, [city, events]);
+    setFilteredEvents(filtered.slice(0, numberOfEvents));
+  }, [city, events, numberOfEvents]);
 
   const handleCityChange = (event) => {
     setCity(event.target.value);
+  };
+
+  const handleNumberOfEventsChange = (event) => {
+    const value = parseInt(event.target.value, 10) || 0;
+    setNumberOfEvents(value);
   };
 
   return (
@@ -40,7 +42,13 @@ function App() {
       </div>
       <div className="NumberOfEvents">
         <label htmlFor="numberOfEvents">Number of Events:</label>
-        <input className="number-of-events" id="numberOfEvents" type="number" />
+        <input 
+          className="number-of-events" 
+          id="numberOfEvents" 
+          type="number" 
+          value={numberOfEvents} 
+          onChange={handleNumberOfEventsChange} 
+        />
       </div>
       <ul className="events-list">
         {filteredEvents.map((event, index) => (
