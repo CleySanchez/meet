@@ -1,15 +1,6 @@
 // src/api.js
-
 import mockData from './mock-data';
 
-export const extractLocations = (events) => {
-  let locations = events.map((event) => event.location);
-  let uniqueLocations = [...new Set(locations)];
-  return uniqueLocations;
-};
-
-
-// Function to get events
 export const getEvents = async () => {
   if (window.location.href.startsWith("http://localhost")) {
     return mockData;
@@ -28,7 +19,11 @@ export const getEvents = async () => {
   }
 };
 
-// Function to get access token
+export const extractLocations = (events) => {
+  const locations = events.map((event) => event.location);
+  return [...new Set(locations)];
+};
+
 export const getAccessToken = async () => {
   const accessToken = localStorage.getItem('access_token');
   const tokenCheck = accessToken && (await checkToken(accessToken));
@@ -39,7 +34,7 @@ export const getAccessToken = async () => {
     const code = await searchParams.get("code");
     if (!code) {
       const response = await fetch(
-        "YOUR_SERVERLESS_GET_AUTH_URL_ENDPOINT"
+        "https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url"
       );
       const result = await response.json();
       const { authUrl } = result;
@@ -50,7 +45,6 @@ export const getAccessToken = async () => {
   return accessToken;
 };
 
-// Function to check token
 const checkToken = async (accessToken) => {
   const response = await fetch(
     `https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`
@@ -59,18 +53,16 @@ const checkToken = async (accessToken) => {
   return result;
 };
 
-// Function to get token
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
-    'YOUR_GET_ACCESS_TOKEN_ENDPOINT' + '/' + encodeCode
+    'https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-events/' + '/' + encodeCode
   );
   const { access_token } = await response.json();
   access_token && localStorage.setItem("access_token", access_token);
   return access_token;
 };
 
-// Function to remove query
 const removeQuery = () => {
   let newurl;
   if (window.history.pushState && window.location.pathname) {

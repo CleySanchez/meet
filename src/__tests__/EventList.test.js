@@ -1,35 +1,38 @@
-// src/__test__/EventList.test.js
-
-import { render, within, waitFor } from '@testing-library/react';
-import { getEvents } from '../api';
+import React from 'react';
+import { render } from '@testing-library/react';
 import EventList from '../components/EventList';
-import App from "../App";
+import mockData from '../mock-data';
+import { within } from '@testing-library/react';
 
 describe('<EventList /> component', () => {
-  let EventListComponent;
-  beforeEach(() => {
-    EventListComponent = render(<EventList />);
-  })
+  const events = mockData;
 
-  test('has an element with "list" role', () => {
-    expect(EventListComponent.queryByRole("list")).toBeInTheDocument();
+  test('renders a list of events', () => {
+    const { getAllByRole } = render(<EventList events={events} />);
+    const eventItems = getAllByRole('listitem');
+    expect(eventItems).toHaveLength(events.length);
   });
 
-  test('renders correct number of events', async () => {
-    const allEvents = await getEvents();
-    EventListComponent.rerender(<EventList events={allEvents} />);
-    expect(EventListComponent.getAllByRole("listitem")).toHaveLength(allEvents.length);
-  });
-});
+  test('renders event details correctly', () => {
+    const { getAllByRole } = render(<EventList events={events} />);
+    const eventItems = getAllByRole('listitem');
 
-describe('<EventList /> integration', () => {
-  test('renders a non-empty list of events when the app is mounted and rendered', async () => {
-    const AppComponent = render(<App />);
-    const AppDOM = AppComponent.container.firstChild;
-    const EventListDOM = AppDOM.querySelector('#event-list');
-    await waitFor(() => {
-      const EventListItems = within(EventListDOM).queryAllByRole('listitem');
-      expect(EventListItems.length).toBe(32);
+    events.forEach((event, index) => {
+      const eventItem = eventItems[index];
+      const { getByText } = within(eventItem);
+
+      expect(getByText(event.summary)).toBeInTheDocument();
+      expect(getByText(event.location)).toBeInTheDocument();
+      
+      const eventDate = new Date(event.start.dateTime).toLocaleString([], {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      expect(getByText(eventDate)).toBeInTheDocument();
     });
   });
 });

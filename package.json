@@ -7,6 +7,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
+    "reflect-metadata": "^0.2.2",
     "web-vitals": "^2.1.4",
     "workbox-background-sync": "^6.6.0",
     "workbox-broadcast-update": "^6.6.0",
@@ -53,7 +54,8 @@
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
-    "gh-pages": "^6.1.1"
+    "gh-pages": "^6.1.1",
+    "jest-cucumber": "^4.5.0"
   },
   "description": "## Project Overview The Meet App is a serverless, progressive web application (PWA) built with React, utilizing a test-driven development (TDD) approach. The app uses the Google Calendar API to fetch upcoming events, and allows users to search for events by city, view event details, specify the number of events, use the app offline, add a shortcut to their home screen, and visualize event details through charts.",
   "main": "index.js",

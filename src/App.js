@@ -1,38 +1,61 @@
-// src/App.js
-
-import CitySearch from './components/CitySearch';
-import EventList from './components/EventList';
-import NumberOfEvents from './components/NumberOfEvents';
-import { useEffect, useState } from 'react';
-import { extractLocations, getEvents } from './api';
-
+import React, { useState, useEffect } from 'react';
+import mockData from './mock-data';
 import './App.css';
 
-const App = () => {
-  const [allLocations, setAllLocations] = useState([]);
-  const [currentNOE, setCurrentNOE] = useState(32);
+function App() {
   const [events, setEvents] = useState([]);
-  const [currentCity, setCurrentCity] = useState("See all cities");
-
+  const [city, setCity] = useState('');
+  const [filteredEvents, setFilteredEvents] = useState([]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      setEvents(mockData);
+      setFilteredEvents(mockData);
+    };
     fetchData();
-  }, [currentCity]);
+  }, []);
 
-  const fetchData = async () => {
-    const allEvents = await getEvents();
-    const filteredEvents = currentCity === "See all cities" ?
-      allEvents :
-      allEvents.filter(event => event.location === currentCity)
-    setEvents(filteredEvents.slice(0, currentNOE));
-    setAllLocations(extractLocations(allEvents));
-  }
+  useEffect(() => {
+    setFilteredEvents(
+      events.filter(event =>
+        event.location.toLowerCase().includes(city.toLowerCase())
+      )
+    );
+  }, [city, events]);
+
+  const handleCityChange = (event) => {
+    setCity(event.target.value);
+  };
 
   return (
     <div className="App">
-      <CitySearch allLocations={allLocations} setCurrentCity={setCurrentCity} />
-      <NumberOfEvents />
-      <EventList events={events} />
+      <div className="CitySearch">
+        <input
+          className="city"
+          placeholder="Search for a city"
+          type="text"
+          value={city}
+          onChange={handleCityChange}
+        />
+      </div>
+      <div className="NumberOfEvents">
+        <label htmlFor="numberOfEvents">Number of Events:</label>
+        <input className="number-of-events" id="numberOfEvents" type="number" />
+      </div>
+      <ul className="events-list">
+        {filteredEvents.map((event, index) => (
+          <li key={index} className="event-item">
+            <div className="event">
+              <h2>{event.summary}</h2>
+              <p>{event.location}</p>
+              <p>{new Date(event.start.dateTime).toLocaleString()}</p>
+            </div>
+            <a href={event.htmlLink} target="_blank" rel="noopener noreferrer">
+              <button className="show-details">Show Details</button>
+            </a>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

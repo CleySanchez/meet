@@ -1,54 +1,102 @@
-// src/__tests__/Event.test.js
-
-import { render } from '@testing-library/react';
+import React from 'react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { getEvents } from '../api';
 import Event from '../components/Event';
+import mockData from '../mock-data';
+import { getEvents } from '../api.js';
+
+// Mock the API call
+jest.mock('../api.js', () => ({
+  getEvents: jest.fn(),
+  extractLocations: jest.fn((events) => {
+    const locations = events.map((event) => event.location);
+    return [...new Set(locations)];
+  }),
+}));
 
 describe('<Event /> component', () => {
   let EventComponent;
-  let allEvents;
-  beforeEach(async () => {
-    allEvents = await getEvents();
-    EventComponent = render(<Event event={allEvents[0]} />)
+  let event;
+
+  beforeEach(() => {
+    getEvents.mockResolvedValue(mockData);
+    event = mockData[0];
+    EventComponent = render(<Event event={event} />);
   });
 
-  test('renders event Title', () => {
-    expect(EventComponent.queryByText(allEvents[0].summary)).toBeInTheDocument();
+  test('renders event details correctly', async () => {
+    const { getByText } = EventComponent;
+    await waitFor(() => {
+      expect(getByText(event.summary)).toBeInTheDocument();
+      expect(getByText(event.location)).toBeInTheDocument();
+      const eventDate = new Date(event.start.dateTime).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      });
+      expect(getByText(eventDate)).toBeInTheDocument();
+    });
   });
 
-  test('renders event location', () => {
-    expect(EventComponent.queryByText(allEvents[0].location)).toBeInTheDocument();
+  test('renders event Title', async () => {
+    const { queryByText } = EventComponent;
+    await waitFor(() => {
+      expect(queryByText(event.summary)).toBeInTheDocument();
+    });
   });
 
-  test('renders event details button with the title (show details)', () => {
-    expect(EventComponent.queryByText('show details')).toBeInTheDocument();
+  test('renders event location', async () => {
+    const { queryByText } = EventComponent;
+    await waitFor(() => {
+      expect(queryByText(event.location)).toBeInTheDocument();
+    });
   });
 
-  test("by default, event's details section should be hidden", () => {
-    expect(EventComponent.container.querySelector('.details')).not.toBeInTheDocument();
+  test('renders event details button with the title (show details)', async () => {
+    const { queryByText } = EventComponent;
+    await waitFor(() => {
+      expect(queryByText('show details')).toBeInTheDocument();
+    });
+  });
+
+  test("by default, event's details section should be hidden", async () => {
+    const { container } = EventComponent;
+    await waitFor(() => {
+      expect(container.querySelector('.details')).not.toBeInTheDocument();
+    });
   });
 
   test("shows the details section when the user clicks on the 'show details' button", async () => {
     const user = userEvent.setup();
-    await user.click(EventComponent.queryByText('show details'));
+    const { queryByText, container } = EventComponent;
+    await user.click(queryByText('show details'));
 
-    expect(EventComponent.container.querySelector('.details')).toBeInTheDocument();
-    expect(EventComponent.queryByText('hide details')).toBeInTheDocument();
-    expect(EventComponent.queryByText('show details')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(container.querySelector('.details')).toBeInTheDocument();
+      expect(queryByText('hide details')).toBeInTheDocument();
+      expect(queryByText('show details')).not.toBeInTheDocument();
+    });
   });
 
   test("hides the details section when the user clicks on the 'hide details' button", async () => {
     const user = userEvent.setup();
+    const { queryByText, container } = EventComponent;
 
-    await user.click(EventComponent.queryByText('show details'));
-    expect(EventComponent.container.querySelector('.details')).toBeInTheDocument();
-    expect(EventComponent.queryByText('hide details')).toBeInTheDocument();
-    expect(EventComponent.queryByText('show details')).not.toBeInTheDocument();
+    await user.click(queryByText('show details'));
+    await waitFor(() => {
+      expect(container.querySelector('.details')).toBeInTheDocument();
+      expect(queryByText('hide details')).toBeInTheDocument();
+      expect(queryByText('show details')).not.toBeInTheDocument();
+    });
 
-    await user.click(EventComponent.queryByText('hide details'));
-    expect(EventComponent.container.querySelector('.details')).not.toBeInTheDocument();
-    expect(EventComponent.queryByText('hide details')).not.toBeInTheDocument();
-    expect(EventComponent.queryByText('show details')).toBeInTheDocument();
+    await user.click(queryByText('hide details'));
+    await waitFor(() => {
+      expect(container.querySelector('.details')).not.toBeInTheDocument();
+      expect(queryByText('hide details')).not.toBeInTheDocument();
+      expect(queryByText('show details')).toBeInTheDocument();
+    });
   });
 });
