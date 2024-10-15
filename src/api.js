@@ -34,7 +34,7 @@ export const getAccessToken = async () => {
     const code = await searchParams.get("code");
     if (!code) {
       const response = await fetch(
-        "https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url"
+        "YOUR_SERVERLESS_GET_AUTH_URL_ENDPOINT"
       );
       const result = await response.json();
       const { authUrl } = result;
@@ -56,7 +56,7 @@ const checkToken = async (accessToken) => {
 const getToken = async (code) => {
   const encodeCode = encodeURIComponent(code);
   const response = await fetch(
-    'https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-events/' + '/' + encodeCode
+    'YOUR_GET_ACCESS_TOKEN_ENDPOINT' + '/' + encodeCode
   );
   const { access_token } = await response.json();
   access_token && localStorage.setItem("access_token", access_token);

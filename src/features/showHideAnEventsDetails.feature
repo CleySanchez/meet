@@ -1,15 +1,15 @@
-Feature: Show/Hide Event Details
+Feature: Show/hide an event’s details
 
-Scenario: An event element is collapsed by default
-  Given the user opens the app
-  Then the event element should be collapsed by default
+  Scenario: An event element is collapsed by default
+    Given the user has loaded the event list
+    Then the event details should be hidden by default
 
-Scenario: User can expand an event to see details
-  Given the event element is collapsed
-  When the user clicks on the event
-  Then the event element should expand to show details
+  Scenario: User can expand an event to see its details
+    Given the user has loaded the event list
+    When the user clicks on the "show details" button for an event
+    Then the event details should be displayed
 
-Scenario: User can collapse an event to hide details
-  Given the event element is expanded
-  When the user clicks on the event
-  Then the event element should collapse to hide details
+  Scenario: User can collapse an event to hide its details
+    Given the event details are displayed
+    When the user clicks on the "hide details" button for the same event
+    Then the event details should be hidden
