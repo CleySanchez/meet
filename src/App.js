@@ -1,60 +1,112 @@
-// src/App.js
-import React, { useState, useEffect } from 'react';
-import mockData from './mock-data';
+import { useState, useEffect } from 'react';
+import './App.css';
+import { extractLocations, getEvents } from './api';
+import CitySearch from './components/CitySearch/CitySearch';
+import EventList from './components/EventList/EventList';
+import NumberOfResults from './components/NumberOfResults/NumberOfResults';
+import LoadingScreen from './components/LoadingScreen/LoadingScreen';
+import { InfoAlert, ErrorAlert, WarningAlert } from './components/Alert/Alert'; 
+import CityEventChart from './components/CityEventsChart/CityEventsChart';
+import ChartPie from './components/ChartPie/ChartPie';
 
 function App() {
-  const [events, setEvents] = useState([]);
-  const [numberOfEvents, setNumberOfEvents] = useState(35); // Default to showing 32 events
-  const [filteredEvents, setFilteredEvents] = useState([]); // Filtered events based on the numberOfEvents
 
-  useEffect(() => {
-    // Fetch events (you are using mockData for now)
-    setEvents(mockData);
-  }, []);
+    const [numberOfResults, setNumberOfResults] = useState(32);
+    const [selectedCity, setSelectedCity] = useState('');
+    const [events, setEvents] = useState([]);
+    const [locations, setLocations] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [infoAlert, setInfoAlert] = useState('');
+    const [errorAlert, setErrorAlert] = useState('');
+    const [onlineWarningAlert, setOnlineWarningAlert] = useState('');
 
-  useEffect(() => {
-    // Update the filtered events based on numberOfEvents
-    setFilteredEvents(events.slice(0, numberOfEvents));
-  }, [events, numberOfEvents]);
+    const fetchInitialData = async () => {
+        setIsLoading(true);
+        const allEvents = await getEvents();
+        setLocations(await extractLocations(allEvents));
+        setEvents(allEvents);
+        setIsLoading(false);
+    };
 
-  const handleNumberOfEventsChange = (event) => {
-    const value = event.target.value;
-    setNumberOfEvents(value > 0 ? value : 1); // Ensure at least 1 event is shown
-  };
+    const fetchData = async() => {
+        const allEvents = await getEvents();
+        setLocations(await extractLocations(allEvents));
+        setEvents(allEvents);
+    }
 
-  return (
-    <div className="App">
-      <div className="CitySearch">
-        <input className="city" placeholder="Search for a city" type="text" />
-        <ul className="suggestions">
-          <li><b>See all cities</b></li>
-        </ul>
-      </div>
-      
-      <div>
-        <label htmlFor="numberOfEvents">Number of Events:</label>
-        <input
-          className="number-of-events"
-          id="numberOfEvents"
-          type="number"
-          value={numberOfEvents}
-          onChange={handleNumberOfEventsChange}
-        />
-      </div>
-      
-      <ul>
-        {filteredEvents.map((event, index) => (
-          <li key={index} className="event-item">
-            <div className="event">
-              <h2>{event.summary}</h2>
-              <p>{event.location}</p>
-              <p>{new Date(event.start.dateTime).toLocaleString()}</p>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+    useEffect(() => {
+        fetchInitialData();
+    }, []);
+
+    useEffect(() => {
+        fetchData();
+    }, [setOnlineWarningAlert])
+
+    //TODO: Put a permanent OnlineStatus rather than the event box
+    let offlineMessage = 'Currently Offline - Jump online for the newest events!'
+    window.addEventListener('online', () => {setOnlineWarningAlert('')});
+    window.addEventListener('offline', () => {
+        // seOnlineWarningAlert has a useEffect, so this avoids double-loading
+        if(!isLoading)
+            setOnlineWarningAlert(offlineMessage);
+    });
+
+
+    return (
+        isLoading?
+            (
+                <div>
+                    <LoadingScreen />
+                </div>
+            ):(
+                <>
+                    
+                    <div className="App">
+                        {/* TiITLE */}
+                        <h1 className='title'>Meet App</h1>
+                        {/* ALERT */}
+                        <div className='alerts-container'>
+                            { errorAlert.length ?
+                                <ErrorAlert text={errorAlert} />
+                            : onlineWarningAlert.length ?
+                                <WarningAlert text={onlineWarningAlert} />
+                            : infoAlert.length ? 
+                                <InfoAlert text={infoAlert} />
+                            : null}
+                        </div>
+                        {/* SEARCH BAR - CITY */}
+                        <CitySearch 
+                            allLocations = {locations}
+                            setSelectedCity = {setSelectedCity}
+                            setInfoAlert = {setInfoAlert}
+                            setErrorAlert = {setErrorAlert}
+                        />
+                        {/* INPUT - # of CITIES */}
+                        <NumberOfResults
+                            setNumberOfResults = {setNumberOfResults}
+                        />
+                        {/* CHARTS */}
+                        <div className='charts-container'>
+                            <CityEventChart 
+                                allLocations={locations}
+                                events={events}
+                            />
+                            <ChartPie 
+                                events={events}                 
+                            />
+                        </div>
+                        {/* EVENTS */}
+                        <EventList 
+                            events = {events}
+                            numberOfResults = {numberOfResults}
+                            selectedCity = {selectedCity}
+                            setInfoAlert = {setInfoAlert}
+                        />
+                        
+                    </div>
+                </>
+            )
+    );
 }
 
 export default App;

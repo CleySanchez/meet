@@ -1,128 +1,51 @@
-# meet
-# Meet App
+# Let'sMeet - Progressive Web App for Online and Offline Event Management
 
-## Project Overview
-The Meet App is a serverless, progressive web application (PWA) built with React, utilizing a test-driven development (TDD) approach. The app uses the Google Calendar API to fetch upcoming events, and allows users to search for events by city, view event details, specify the number of events, use the app offline, add a shortcut to their home screen, and visualize event details through charts.
+Let'sMeet is a Progressive Web App (PWA) designed to manage events seamlessly both online and offline. Users can log in using Google's OAuth, access their Google Calendar events, and interact with a user-friendly interface. The application also includes visual representations of data through graphs and charts. Extensive testing has been implemented using technologies such as Google's Puppeteer, JEST, and Cucumber Gherkin.
 
-## Objectives
-- Build a serverless PWA using React.
-- Implement TDD to ensure high-quality code.
-- Utilize the Google Calendar API for fetching event data.
-- Deploy the app using GitHub Pages.
-- Incorporate data visualization to display event details.
+## Technologies Used
 
-## User Stories and Scenarios
+- **React**: A JavaScript library for building user interfaces.
+- **Recharts**: A composable charting library for React.
+- **Google OAuth**: Authentication protocol used for user login.
+- **Puppeteer**: A Node library that provides a high-level API to control headless browsers or full browsers over the DevTools Protocol.
+- **JEST**: A JavaScript testing framework for React applications.
+- **Cucumber Gherkin**: A behavior-driven development (BDD) tool that allows developers to write tests in a natural language style.
 
-### Feature 1: Filter Events By City
+## Getting Started
 
-#### User Story
-As a user, I should be able to filter events by city so that I can see relevant events.
+To run Let'sMeet locally, follow these steps:
 
-#### Scenarios
-1. **Given** the user hasn’t searched for a city, **then** show upcoming events from all cities.
-2. **Given** the user searches for a city, **when** they type in the search box, **then** show a list of suggestions.
-3. **Given** the user selects a city from the suggested list, **then** show events for that city.
+1. Clone the repository: `git clone https://github.com/Sean-Andrew-Stanek/letsmeet.git`
+2. Install dependencies: `npm install`
+3. Start the application: `npm start`
 
-### Feature 2: Show/Hide Event Details
+## Features
 
-#### User Story
-As a user, I should be able to view more details of an event so that I can get complete information.
+- **OAuth Login**: Users can securely log in using Google's OAuth for authentication.
+- **Google Calendar Integration**: Access and display events from the user's Google Calendar.
+- **Offline Capability**: The PWA is designed to work seamlessly even when the user is offline.
+- **Graphs and Charts**: Visual representation of data through graphs and charts.
+- **Testing**: Extensive testing using JEST, Puppeteer, and Cucumber Gherkin.
 
-#### Scenarios
-1. **Given** an event is collapsed by default, **when** the user clicks on the event, **then** the event details should expand.
-2. **Given** the event details are expanded, **when** the user clicks on the event again, **then** the event details should collapse.
+## Scripts
 
-### Feature 3: Specify Number of Events
+- `npm start`: Start the development server.
+- `npm build`: Build the application for production.
+- `npm test`: Run tests using JEST.
+- `npm run eject`: Eject from Create React App configuration.
+- `npm run predeploy`: Build script for deployment.
+- `npm run deploy`: Deploy the application to GitHub Pages.
 
-#### User Story
-As a user, I should be able to specify the number of events to view so that I can manage the amount of information displayed.
+## Deployment
 
-#### Scenarios
-1. **Given** the user hasn’t specified a number, **then** 32 events should be shown by default.
-2. **Given** the user specifies a number, **then** the specified number of events should be displayed.
+The application is deployed on GitHub Pages at [https://Sean-Andrew-Stanek.github.io/letsmeet](https://Sean-Andrew-Stanek.github.io/letsmeet).
 
-### Feature 4: Use the App When Offline
+## Author
 
-#### User Story
-As a user, I should be able to use the app offline so that I can access information without an internet connection.
+- **Sean Andrew Stanek**
 
-#### Scenarios
-1. **Given** the user is offline, **then** show cached data.
-2. **Given** the user changes search settings while offline, **then** show an error.
+## License
 
-### Feature 5: Add an App Shortcut to the Home Screen
+This project is open-source and available under the [MIT License](LICENSE).
 
-#### User Story
-As a user, I should be able to add the app to my home screen so that I can quickly access it.
-
-#### Scenarios
-1. **Given** the user is using the app, **when** they select the option to add to the home screen, **then** the app should be added as a shortcut.
-
-### Feature 6: Display Charts Visualizing Event Details
-
-#### User Story
-As a user, I should be able to see visual data of events so that I can easily understand event distributions and trends.
-
-#### Scenarios
-1. **Given** the user views event details, **then** show a chart with the number of upcoming events in each city.
-
-## Development and Deployment Tasks
-
-### Create React App
-1. **Initialize the project using Create React App:**
-   ```bash
-   npx create-react-app meet --template cra-template-pwa --use-npm
-
-### Deploy to GitHub Pages
-- Configure the project for deployment using GitHub Pages.
-- Verify the deployment by accessing the live URL.
-
-### AWS Account Creation
-- Follow the tutorial steps to create an AWS account for future use in serverless functions and deployment.
-
-## Additional Notes
-- Ensure the app meets all technical requirements such as compatibility with major browsers, responsive design, offline functionality, and PWA compliance.
-- Utilize TDD by writing tests before implementing features to ensure code quality and reliability.
-- Use data visualization libraries like Chart.js or D3.js for implementing charts in the app.
-
-## Setup Instructions
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/CleySanchez/meet.git
-   cd meet
-
-+-------------------------+
-|    Frontend (React App) |
-|  (Hosted on GitHub Pages)|
-+-------------------------+
-           |
-           | API Requests
-           |
-           v
-+-------------------------+
-| Backend (AWS Lambda)    |
-| Functions               |
-+-------------------------+
-  |                |
-  |                | User Authentication
-  |                |
-  v                v
-+-------------------------+  +----------------------------+
-| External API (Google    |  | Authentication Provider    |
-| Calendar API)           |  | (Google OAuth 2.0)         |
-+-------------------------+  +----------------------------+
-  |
-  | Fetch Event Data
-  |
-  v
-+-------------------------+
-| Event Data Response     |
-+-------------------------+
-  |
-  | Send Event Data to Frontend
-  |
-  v
-+-------------------------+
-|    Frontend (React App) |
-|  (Hosted on GitHub Pages)|
-+-------------------------+
+Feel free to explore Let'sMeet and experience the seamless management of events both online and offline!

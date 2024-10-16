@@ -1,32 +1,36 @@
+# app and org for use with dashboard.serverless.com
+#app: LetsMeet
+#org: Sean-Andrew-Stanek
+
 service: auth-server
 
 provider:
   name: aws
-  runtime: nodejs20.x
-  region: us-east-1
-  stage: dev
-  timeout: 30 # optional, in seconds, default is 6
+  runtime: nodejs18.x
+#overwrite defaults
+  region: ap-northeast-3
+  timeout: 30
   environment:
-    CLIENT_ID: ${file(config.json):CLIENT_ID}
-    CLIENT_SECRET: ${file(config.json):CLIENT_SECRET}
-    CALENDAR_ID: ${file(config.json):CALENDAR_ID}
+    CLIENT_ID: ${file(./config.json):CLIENT_ID}
+    CLIENT_SECRET: ${file(./config.json):CLIENT_SECRET}
+    CALENDAR_ID: ${file(./config.json):CALENDAR_ID}
 
-functions:
+functions: 
   getAuthURL:
     handler: handler.getAuthURL
     events:
-      - http:
-          path: api/get-auth-url
-          method: get
+        - http:
+            path: api/get-auth-url
+            method: get
   getAccessToken:
     handler: handler.getAccessToken
     events:
-      - http:
-          path: api/token/{code}
-          method: get
+        - http:
+            path: api/token/{code}
+            method: get
   getCalendarEvents:
     handler: handler.getCalendarEvents
     events:
-      - http:
-          path: api/get-events/{access_token}
-          method: get
+        - http:
+            path: api/get-calendar-events/{access_token}
+            method: get

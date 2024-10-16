@@ -1,109 +1,121 @@
-/* Existing styles */
+@import url(https://fonts.googleapis.com/css?family=Roboto:500);
 .App {
   text-align: center;
+  padding: 2% 5%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App * {
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* New styles for layout and component styling */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
-  margin: 0;
+ul {
   padding: 0;
+  list-style: none;
 }
 
-.App-container {
-  max-width: 800px;
-  margin: 20px auto;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+p {
+  margin: 5px 0;
 }
 
-input.number-of-events {
-  width: 50px;
-  margin: 10px 0;
-  padding: 5px;
+.title {
+  background-color: rgba(200, 200, 200, 1);
+  margin: 5 -10px;
+  font-size: 50px;
 }
 
-.event-item {
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.event-item:last-child {
-  border-bottom: none;
+input[type="text"],
+input[type="number"] {
+  padding: 8px 6px 8px 10px;
+  border-radius: 4px;
+  outline: none;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  line-height: 20px;
+  align-self: center;
+  height: 38px;
+  margin-bottom: 20px;
 }
 
 input[type="text"] {
-  padding: 10px;
-  margin-bottom: 10px;
-  width: 100%;
-  box-sizing: border-box;
+  width: 300px;
 }
 
 input[type="number"] {
-  padding: 10px;
-  margin-bottom: 10px;
-  width: 100px;
-  box-sizing: border-box;
+  width: 150px;
 }
 
-button {
-  padding: 10px;
-  margin-top: 10px;
-  background-color: #282c34;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.charts-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 350px;
+
 }
 
-button:hover {
-  background-color: #61dafb;
+@media (max-width: 768px) {
+  .charts-container{
+    grid-template-columns: 1fr;
+    grid-auto-rows: 200px;
+  }
 }
 
-.event-item h2 {
+.charts-container .responsive-pie-chart {
+  width: 99%;
+  height: 99%;
+}
+
+.city {
+  width: 250px;
+}
+
+#city-search {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  position: relative;
+}
+
+.suggestions {
+  width: 250px;
+  position: absolute;
+  top: 45px;
+  z-index: 2;
+  align-self: center;
   margin: 0;
-  font-size: 1.5em;
+  font-size: 14px;
+  box-shadow: 10px 10px 16px -12px rgba(0, 0, 0, 0.75);
 }
 
-.event-item p {
-  margin: 5px 0;
-  color: #555;
+.suggestions > li {
+  text-align: left;
+  padding: 8px 6px 8px 10px;
+  background-color: #eee;
+  cursor: default;
+}
+
+.suggestions > li:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.suggestions > li:hover {
+  background-color: #bcdcdb;
+}
+
+.event {
+  padding: 10px 10px 35px;
+  margin-bottom: 10px;
+  text-align: left;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+}
+
+.details-btn {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  padding: 5px 8px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
 }
