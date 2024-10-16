@@ -1,4 +1,6 @@
-import puppeteer from 'puppeteer';
+
+import puppeteer from 'puppeteer-core'
+import { executablePath } from 'puppeteer'
 
 describe('End-to-End testing for Meet app', () => {
   let browser;
@@ -6,10 +8,13 @@ describe('End-to-End testing for Meet app', () => {
 
   beforeAll(async () => {
     browser = await puppeteer.launch({
-      headless: false, // You can set to true for headless mode
-      slowMo: 50,      // Slow down actions for clarity
-      ignoreDefaultArgs: ['--disable-extensions']
-    });
+      headless: true, // You can set to true for headless mode
+      slowMo: 50, // Slow down actions for clarity
+      executablePath: executablePath(),
+      ignoreDefaultArgs: ['--disable-extensions'],
+      timeout: 50000
+      });
+      
     page = await browser.newPage();
     await page.goto('http://localhost:3000'); // Ensure the correct URL for your local server
     await page.waitForSelector('.event');     // Wait for the event list to be rendered
