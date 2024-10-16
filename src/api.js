@@ -24,7 +24,7 @@ export const getAccessToken = async () => {
         await localStorage.removeItem('access_token');
         const searchParams = new URLSearchParams(window.location.search);
         const code = await searchParams.get('code');
-        const getAuthURL = 'https://iiyc8mchcj.execute-api.ap-northeast-3.amazonaws.com/dev/api/get-auth-url';
+        const getAuthURL = 'https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-auth-url';
         if (!code) {
             const response = await fetch(getAuthURL);
             const result = await response.json();
@@ -52,7 +52,7 @@ const checkToken = async (accessToken) => {
 
 const getToken = async (code) => {
     const encodeCode = encodeURIComponent(code);
-    const response = await fetch(`https://iiyc8mchcj.execute-api.ap-northeast-3.amazonaws.com/dev/api/token/${encodeCode}`);
+    const response = await fetch(`https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/token/${encodeCode}`);
     const { access_token } = await response.json();
     access_token && localStorage.setItem('access_token', access_token);
 
@@ -69,9 +69,9 @@ export const getTestEvents = async () => {
 */
 export const getEvents = async () => {
     
-    if(window.location.href.startsWith('http://localhost')) {
+   /*  if(window.location.href.startsWith('http://localhost')) {
         return testEventData;
-    }
+    } */
 
     if(!navigator.onLine) {
         const events = localStorage.getItem('offlineEvents');
@@ -82,7 +82,7 @@ export const getEvents = async () => {
 
     if(token) {
         removeQuery();
-        const response = await fetch(`https://iiyc8mchcj.execute-api.ap-northeast-3.amazonaws.com/dev/api/get-calendar-events/${token}`);
+        const response = await fetch(`https://lp47bu2tkc.execute-api.us-east-1.amazonaws.com/dev/api/get-events/${token}`);
         if(!response.ok) {
             console.error('Error while fetching events:', response.statusText);
             return null;
