@@ -15,7 +15,7 @@ Let'sMeet is a Progressive Web App (PWA) designed to manage events seamlessly bo
 
 To run Let'sMeet locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/Sean-Andrew-Stanek/letsmeet.git`
+1. Clone the repository: `git clone (https://cleysanchez.github.io/meet/)`
 2. Install dependencies: `npm install`
 3. Start the application: `npm start`
 
@@ -38,7 +38,7 @@ To run Let'sMeet locally, follow these steps:
 
 ## Deployment
 
-The application is deployed on GitHub Pages at [https://Sean-Andrew-Stanek.github.io/letsmeet](https://Sean-Andrew-Stanek.github.io/letsmeet).
+The application is deployed on GitHub Pages at (https://cleysanchez.github.io/meet/).
 
 ## Author
 
